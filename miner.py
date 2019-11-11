@@ -15,6 +15,7 @@ from datetime import datetime
 
 CONFIG = configparser.ConfigParser()
 
+
 def run_mining(subreddits):
     engine = initialize_engine(CONFIG)
     Session = sessionmaker(bind=engine)
@@ -41,6 +42,7 @@ def run_mining(subreddits):
         else:
             logger.debug(f'Updated post: {post}')
 
+
 @cli.group()
 @cli.option('--config', type=cli.Path(exists=True, dir_okay=False), default='miner.cfg')
 def main(config):
@@ -61,7 +63,11 @@ def init_db():
 @main.command()
 @cli.argument('subreddits', nargs=-1)
 def stream(subreddits):
-    run_mining(subreddits)
+    while True:
+        try:
+            run_mining(subreddits)
+        except praw.exceptions.PRAWException as e:
+            logger.error(f'Encountered {e}. Reconnecting...')
 
 if __name__ == '__main__':
     main()
