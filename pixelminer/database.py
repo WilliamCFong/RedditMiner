@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, ForeignKey
 
 Base = declarative_base()
 
@@ -19,7 +19,7 @@ def reference_col(tablename, nullable=False, pk_name='id', **kwargs):
         category = relationship('Category', backref='categories')
     """
     return Column(
-        db.ForeignKey(f'{tablename}.{pk_name}'),
+        ForeignKey(f'{tablename}.{pk_name}'),
         nullable=nullable, **kwargs)
 
 
